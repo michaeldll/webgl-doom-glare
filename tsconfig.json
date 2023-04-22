@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "strict": false,
+    "strictPropertyInitialization": false,
+    "lib": [
+      "ESNext",
+      "DOM.Iterable",
+      "DOM"
+    ],
+    "target": "es6",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    },
+    "typeRoots": [ "./node_modules/@webgpu/types", "./node_modules/@types"]
+  }
+}

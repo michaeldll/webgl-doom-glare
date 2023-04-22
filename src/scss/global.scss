@@ -1,0 +1,27 @@
+@font-face {
+  font-family: "Open Sans";
+  src: url("assets/fonts/opensans/OpenSans-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+
+body {
+  font-family: "Open Sans", sans-serif;
+  margin: 0;
+  overflow: hidden;
+}
+
+
+main {
+  background: black;
+  
+  // Only when OGL
+  .canvas-gl{
+    width: 100%!important;
+    height: 100vh!important;
+  }
+}
+
+.tp-dfwv {
+  // display: none;
+}
