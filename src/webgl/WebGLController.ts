@@ -1,5 +1,4 @@
 import { Pane } from "tweakpane";
-import { TierResult } from 'detect-gpu';
 import GlareScene from "./scenes/GlareScene";
 import { Renderer } from "ogl-typescript";
 
@@ -9,14 +8,11 @@ export default class WebGLController {
   private canvas: HTMLCanvasElement;
   private renderer: Renderer;
   private pane = new Pane()
-  private gpuTier: TierResult
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
 
     this.setRenderer(true);
-
-    if (!location.hash.includes("debug")) this.pane.hidden = true
 
     this.glareScene = new GlareScene({
       renderer: this.renderer,

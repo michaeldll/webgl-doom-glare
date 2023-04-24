@@ -27,7 +27,7 @@ export class DrawableGeometry {
         this.setBuffers()
     }
 
-    setBuffers = (usage = this.gl.STATIC_DRAW) => {
+    setBuffers = (usage = this.gl.STATIC_DRAW | this.gl.DYNAMIC_DRAW) => {
         for (const [prop, data] of Object.entries(this.attributes)) {            
             this.buffers[prop] = this.getBuffer(prop, data.value, usage)
         }
