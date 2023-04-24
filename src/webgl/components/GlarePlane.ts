@@ -7,11 +7,11 @@ import GlarePlaneMaterial                               from "@/webgl/materials/
 export default class GlarePlane extends Drawable {
     public quadColor = [1, 1, 1, .95]
     public edgeColor = [0, 0, 0, 0]
+    public program = { transparent: true, depthTest: false } // For OGL
+    public wireframe = false
 
     private modelViewMatrix = new Mat4()
     private vertices : Vec3[] = []
-
-    program = { transparent: true, depthTest: false }
 
     constructor(gl: WebGLRenderingContext | OGLRenderingContext) {
         const material = new GlarePlaneMaterial(gl)        
@@ -114,9 +114,6 @@ export default class GlarePlane extends Drawable {
             const vertex = new Vec3(position[index], position[index + 1], position[index + 2])
             this.vertices.push(vertex)
         }
-        
-        // Wireframe
-        // this.mode = this.gl.LINE_LOOP
     }
 
     extrude(camera: Camera, pushDistance = .5){
@@ -174,6 +171,17 @@ export default class GlarePlane extends Drawable {
 
     onBeforeDraw = ({ camera }: { camera: Camera }) => {
         if (!camera) return
+
+        if(this.wireframe) {
+            this.mode = this.gl.LINE_LOOP
+            console.log(this.material.locations.uniforms);
+            
+            this.gl.uniform1f(this.material.locations.uniforms.uWireframeFactor, 1)
+        }
+        else {
+            this.mode = this.gl.TRIANGLES
+            this.gl.uniform1f(this.material.locations.uniforms.uWireframeFactor, 0)
+        }
 
         this.extrude(camera)
         

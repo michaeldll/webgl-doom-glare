@@ -32,8 +32,6 @@ export class DrawableMaterial {
         }
 
         for (const attribute of attributes) {
-            console.log(attribute);
-            
             locations.attributes[attribute] = this.gl.getAttribLocation(this.program, attribute)
         }
 

@@ -11,7 +11,7 @@ export default class GlareScene {
   private renderer: Renderer
 
   private plane : GlarePlane
-  private controls
+  private controls : any
 
   constructor({renderer, pane}: {renderer: Renderer, pane: FolderApi}) {
     this.gl = renderer.gl as OGLRenderingContext
@@ -72,7 +72,7 @@ export default class GlareScene {
       title: "Glare Scene",
     });
 
-    folder.addInput(this.camera, "position", { label: "Camera Position" });
+    folder.addInput(this.plane, "wireframe", { label: "Toggle wireframe" });
   }
 
   public tick() {
