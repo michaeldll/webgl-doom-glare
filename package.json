@@ -18,17 +18,11 @@
   },
   "homepage": "https://github.com/michaeldll/hunter-gatherer-boilerplate#readme",
   "dependencies": {
-    "@tweakpane/core": "^1.0.9",
-    "@tweakpane/plugin-essentials": "^0.1.4",
-    "@types/three": "^0.141.0",
-    "@webgpu/types": "^0.1.30",
-    "desenha": "^1.0.10",
-    "detect-gpu": "^4.0.29",
     "esbuild": "^0.12.22",
     "esbuild-plugin-glsl": "^1.1.0",
     "esbuild-sass-plugin": "^2.2.6",
-    "gl-matrix": "^3.4.3",
     "ogl-typescript": "^0.1.40",
+    "@tweakpane/core": "^1.0.9",
     "tweakpane": "^3.0.8"
   }
 }
