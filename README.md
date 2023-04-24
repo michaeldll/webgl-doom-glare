@@ -1,4 +1,11 @@
-# hunter-gatherer boilerplate
+# WebGL Doom Glare
+
+Original inspiration: http://yzergame.com/doomGlare.html and http://simonschreibt.de/gat/doom-3-volumetric-glow/
+
+Basic implementation of Doom 3's "Glare". Extrudes vertices and colors them w/ their vertex color.
+Looking for help in improving it!
+
+## hunter-gatherer boilerplate
 
 As barebones I'm willing to go. You probably don't want to use this.
 
