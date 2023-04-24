@@ -6,6 +6,7 @@ export type Context = WebGLRenderingContext & { createVertexArray, bindVertexArr
 
 /**
  * A barebones WebGL entity that also works with OGL's renderer and Scene Graph
+ * @author @michael.dll
  */
 export abstract class Drawable extends Transform {
     public gl: Context
