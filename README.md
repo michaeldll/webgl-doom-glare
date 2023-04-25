@@ -2,8 +2,9 @@
 
 Original inspiration: http://yzergame.com/doomGlare.html and http://simonschreibt.de/gat/doom-3-volumetric-glow/
 
-Basic implementation of Doom 3's "Glare". Extrudes vertices and colors them w/ their vertex color.
-Looking for help in improving it!
+Basic implementation of Doom 3's "Glare". It fakes a simple bloom effect by extruding vertices and interpolating their vertex colors.
+
+*Looking for help in improving it!*
 
 Deploy: https://webgl-doom-glare.vercel.app
 
