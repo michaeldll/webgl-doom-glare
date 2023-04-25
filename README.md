@@ -5,6 +5,8 @@ Original inspiration: http://yzergame.com/doomGlare.html and http://simonschreib
 Basic implementation of Doom 3's "Glare". Extrudes vertices and colors them w/ their vertex color.
 Looking for help in improving it!
 
+webgl-doom-glare.vercel.app
+
 ## hunter-gatherer boilerplate
 
 As barebones I'm willing to go. You probably don't want to use this.
