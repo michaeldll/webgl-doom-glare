@@ -1,5 +1,7 @@
 # WebGL Doom Glare
 
+![Example thumbnail](thumbnail.jpg)
+
 Original inspiration: http://yzergame.com/doomGlare.html and http://simonschreibt.de/gat/doom-3-volumetric-glow/
 
 Basic implementation of Doom 3's "Glare". It fakes a simple bloom effect by extruding vertices and interpolating their vertex colors.
