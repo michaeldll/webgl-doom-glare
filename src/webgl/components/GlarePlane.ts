@@ -4,6 +4,9 @@ import { DrawableGeometry }                             from "@/utils/libs/drawa
 import { clamp, map }                                   from "@/utils/math/math";
 import GlarePlaneMaterial                               from "@/webgl/materials/GlarePlaneMaterial";
 
+const BORDER_SUBDIVISIONS = 16
+const BORDER_VERTICES_PER_CORNER = BORDER_SUBDIVISIONS + 1
+
 export default class GlarePlane extends Drawable {
     public quadColor = [1, 1, 1, .95]
     public edgeColor = [0, 0, 0, 0]
@@ -14,87 +17,65 @@ export default class GlarePlane extends Drawable {
     private vertices : Vec3[] = []
 
     constructor(gl: WebGLRenderingContext | OGLRenderingContext) {
-        const material = new GlarePlaneMaterial(gl)        
+        const material = new GlarePlaneMaterial(gl)
+
+        const quadVertices = [
+            [-1.0, -1.0, 0.0],
+            [1.0, -1.0, 0.0],
+            [1.0, 1.0, 0.0],
+            [-1.0, 1.0, 0.0],
+        ]
+        const positions = quadVertices.flat()
+        const uvs = [
+            0.0, 0.0,
+            1.0, 0.0,
+            1.0, 1.0,
+            0.0, 1.0,
+        ]
+        const indices = [0, 1, 2, 0, 2, 3]
+
+        for (let corner = 0; corner < quadVertices.length; corner++) {
+            for (let subdivision = 0; subdivision < BORDER_VERTICES_PER_CORNER; subdivision++) {
+                positions.push(...quadVertices[corner])
+                uvs.push(1.0, 0.0)
+            }
+        }
+
+        for (let corner = 0; corner < quadVertices.length; corner++) {
+            const nextCorner = (corner + 1) % quadVertices.length
+            const cornerStart = quadVertices.length + corner * BORDER_VERTICES_PER_CORNER
+            const nextCornerStart = quadVertices.length + nextCorner * BORDER_VERTICES_PER_CORNER
+            const outgoingEdge = cornerStart + BORDER_SUBDIVISIONS
+
+            // Connect adjacent corners along each straight edge.
+            indices.push(
+                corner, outgoingEdge, nextCornerStart,
+                corner, nextCornerStart, nextCorner,
+            )
+
+            // Fan the subdivided border around each corner.
+            for (let subdivision = 0; subdivision < BORDER_SUBDIVISIONS; subdivision++) {
+                indices.push(corner, cornerStart + subdivision, cornerStart + subdivision + 1)
+            }
+        }
+
+        const vertexCount = quadVertices.length + quadVertices.length * BORDER_VERTICES_PER_CORNER
 
         const attributes = {
             position: {
-                value: new Float32Array([
-                    -1.0, -1.0, 0.0,
-                    1.0, -1.0, 0.0,
-                    1.0, 1.0, 0.0,
-                    -1.0, 1.0, 0.0,
-        
-                    -1.0, -1.0, 0.0,
-                    1.0, -1.0, 0.0,
-                    1.0, 1.0, 0.0,
-                    -1.0, 1.0, 0.0,
-        
-                    -1.0, -1.0, 0.0,
-                    1.0, -1.0, 0.0,
-                    1.0, 1.0, 0.0,
-                    -1.0, 1.0, 0.0,
-        
-                    -1.0, -1.0, 0.0,
-                    1.0, -1.0, 0.0,
-                    1.0, 1.0, 0.0,
-                    -1.0, 1.0, 0.0,
-                ]),
+                value: new Float32Array(positions),
                 size: 3
             },
             uv: {
-                value: new Float32Array([
-                    0.0, 0.0,
-                    1.0, 0.0,
-                    1.0, 1.0,
-                    0.0, 1.0,
-        
-                    1.0, 0.0,
-                    1.0, 0.0,
-                    1.0, 0.0,
-                    1.0, 0.0,
-        
-                    1.0, 0.0,
-                    1.0, 0.0,
-                    1.0, 0.0,
-                    1.0, 0.0,
-        
-                    1.0, 0.0,
-                    1.0, 0.0,
-                    1.0, 0.0,
-                    1.0, 0.0,
-                ]),
+                value: new Float32Array(uvs),
                 size: 2
             },
             color: {
-                value: new Float32Array([
-                    1.0, 1.0, 1.0, 1.0,
-                    1.0, 1.0, 1.0, 1.0,
-                    1.0, 1.0, 1.0, 1.0,
-                    1.0, 1.0, 1.0, 1.0,
-        
-                    1.0, 1.0, 1.0, 1.0,
-                    1.0, 1.0, 1.0, 1.0,
-                    1.0, 1.0, 1.0, 1.0,
-                    1.0, 1.0, 1.0, 1.0,
-        
-                    1.0, 1.0, 1.0, 1.0,
-                    1.0, 1.0, 1.0, 1.0,
-                    1.0, 1.0, 1.0, 1.0,
-                    1.0, 1.0, 1.0, 1.0,
-        
-                    1.0, 1.0, 1.0, 1.0,
-                    1.0, 1.0, 1.0, 1.0,
-                    1.0, 1.0, 1.0, 1.0,
-                    1.0, 1.0, 1.0, 1.0
-                ]),
+                value: new Float32Array(vertexCount * 4).fill(1),
                 size: 4
             },
             index: {
-                value: new Uint16Array([
-                    0,1,2, 0,2,3,                                                   // Quad
-                    0,5,7, 0,7,1, 1,8,10, 1,10,2, 2,11,13, 2,13,3, 3,14,4, 3,4,0,   // Flaps
-                    0,4,6, 0,6,5, 1,7,9, 1,9,8, 2,10,12, 2,12,11, 3,13,15, 3,15,14  // Connections
-                ]), 
+                value: new Uint16Array(indices),
                 size: 1
             },
         }        
@@ -143,9 +124,9 @@ export default class GlarePlane extends Drawable {
         
         // Get worldspace eye to original 4 vertices
         const eyeToVerticesWorldSpace = [
-            new Vec3(), 
-            new Vec3(), 
-            new Vec3(), 
+            new Vec3(),
+            new Vec3(),
+            new Vec3(),
             new Vec3()
         ]
         for (let index = 0; index < 4; index++) {
@@ -154,17 +135,21 @@ export default class GlarePlane extends Drawable {
         
         // Extrude quad vertices
         const sign = Math.sign(dot)
-        const pushDirectionsWorldSpace = [new Vec3(), new Vec3(), new Vec3()]
+        const pushDirectionsWorldSpace = [new Vec3(), new Vec3()]
         for (let i = 0; i < 4; i++) {
             pushDirectionsWorldSpace[0] = eyeToVerticesWorldSpace[i].clone().cross(eyeToVerticesWorldSpace[(i + 3) % 4]).scale(sign).normalize();
 
             pushDirectionsWorldSpace[1] = eyeToVerticesWorldSpace[(i + 1) % 4].clone().cross(eyeToVerticesWorldSpace[i]).scale(sign).normalize();
 
-            pushDirectionsWorldSpace[2] = pushDirectionsWorldSpace[0].clone().add(pushDirectionsWorldSpace[1]).normalize();
-
-            for (let j = 0; j < 3; j++) {
-                const offset = pushDirectionsWorldSpace[j].clone().scale(pushDistance);
-                this.vertices[4 + j + 3 * i] = this.vertices[i].clone().add(offset);
+            for (let subdivision = 0; subdivision < BORDER_VERTICES_PER_CORNER; subdivision++) {
+                const progress = subdivision / BORDER_SUBDIVISIONS
+                const pushDirection = new Vec3(
+                    pushDirectionsWorldSpace[0][0] * (1 - progress) + pushDirectionsWorldSpace[1][0] * progress,
+                    pushDirectionsWorldSpace[0][1] * (1 - progress) + pushDirectionsWorldSpace[1][1] * progress,
+                    pushDirectionsWorldSpace[0][2] * (1 - progress) + pushDirectionsWorldSpace[1][2] * progress,
+                ).normalize()
+                const offset = pushDirection.scale(pushDistance)
+                this.vertices[4 + subdivision + BORDER_VERTICES_PER_CORNER * i] = this.vertices[i].clone().add(offset)
             }
         }
     }
@@ -174,8 +159,6 @@ export default class GlarePlane extends Drawable {
 
         if(this.wireframe) {
             this.mode = this.gl.LINE_LOOP
-            console.log(this.material.locations.uniforms);
-            
             this.gl.uniform1f(this.material.locations.uniforms.uWireframeFactor, 1)
         }
         else {
